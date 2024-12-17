@@ -16,11 +16,8 @@ export function useCustomHook() {
 
   React.useEffect(()=>{
     setCustomerInfo(customerInfo);
-    // setOrderDetails(orderDetails);
-    // setSummary(summary);
-    // setFiles(files);
   },[customerInfo,summary,orderDetails,files])
-  console.log(customerInfo,"cis")
+
   const updateFields = (updates, key) => {
     key((prevFormData) => {
       // Create a new object to avoid mutation
@@ -59,7 +56,6 @@ export function useCustomHook() {
     const selectedFiles = event.target.files;
     if (selectedFiles && selectedFiles.length > 0) {
       const newFiles = Array.from(selectedFiles);
-      console.log(newFiles, "newfiles", newFiles[0].type);
       setFiles((prevFiles) => [
         ...prevFiles,
         {
@@ -133,20 +129,17 @@ export function useCustomHook() {
 
     const allObject = { ...orderDetails, ...customerInfo, ...summary };
     const isValid = Object.values(allObject).filter((i) => i.value === "");
-    console.log(isValid, "isValidisValid");
-    // window.scrollTo(0,0);
+
     if (isValid.length <= 0) {
       const input = document.getElementById("capture");
       const canvas = await html2canvas(input);
       const data = canvas.toDataURL("image/png");
 
       const pdf = new jsPDF({
-        // unit: "px",
-        // format:"a6",
+        
         disableFontFace: true,
         compress: true,
       });
-      console.log(pdf.internal.pageSize.height);
       const imgProperties = pdf.getImageProperties(data);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
@@ -154,6 +147,10 @@ export function useCustomHook() {
       pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight, "FAST");
 
       pdf.save("print.pdf");
+      setCustomerInfo(initialCustomerInfo);
+      setOrderDetails(initialOrderDetails);
+      setSummary(summary);
+      setFiles([]);
     }
   };
 
